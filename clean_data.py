@@ -17,9 +17,14 @@ def clean_data(input_file='result.csv', output_dir='cleaned'):
         input_file: 输入的 CSV 文件路径
         output_dir: 输出目录
     """
-    # 创建输出目录
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
+    # 清空输出目录（确保删除上轮有但本轮没有的地区文件）
+    if os.path.exists(output_dir):
+        import shutil
+        print(f"正在清空输出目录：{output_dir}")
+        shutil.rmtree(output_dir)
+    
+    # 重新创建输出目录
+    os.makedirs(output_dir)
     
     # 按地区分组存储数据
     data_by_region = defaultdict(list)
