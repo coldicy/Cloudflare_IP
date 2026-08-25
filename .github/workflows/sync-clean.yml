@@ -3,7 +3,7 @@ name: Sync and Clean Data
 on:
   schedule:
     # 每 6 小时运行一次（可根据需要调整）
-    - cron: '* */6 * * *'
+    - cron: '0 */6 * * *'
   workflow_dispatch:  # 允许手动触发
   push:
     branches: [ main, master ]
