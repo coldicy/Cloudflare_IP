@@ -1,0 +1,69 @@
+name: Sync and Clean Data
+
+on:
+  schedule:
+    # 每 5 分钟运行一次（可根据需要调整）
+    - cron: '*/5 * * * *'
+  workflow_dispatch:  # 允许手动触发
+  push:
+    branches: [ main, master ]
+
+permissions:
+  contents: write
+
+jobs:
+  sync-and-clean:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Set up Git
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+    
+    - name: Add upstream remote
+      run: |
+        # 替换为实际的上游仓库 URL
+        git remote add upstream https://github.com/ORIGINAL_OWNER/ORIGINAL_REPO.git || true
+    
+    - name: Fetch and merge upstream changes
+      run: |
+        git fetch upstream
+        # 尝试合并上游的 main/master 分支
+        git merge upstream/main || git merge upstream/master || echo "No upstream changes to merge"
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+    
+    - name: Install dependencies (if any)
+      run: |
+        # 如果需要额外的 Python 包，在这里安装
+        # pip install -r requirements.txt
+    
+    - name: Clean data
+      run: |
+        python3 clean_data.py
+    
+    - name: Commit and push changes
+      run: |
+        git add cleaned/
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "Auto-sync: Update cleaned data $(date '+%Y-%m-%d %H:%M:%S')"
+          git push origin HEAD
+        fi
+    
+    - name: Upload artifacts (optional)
+      uses: actions/upload-artifact@v4
+      with:
+        name: cleaned-data
+        path: cleaned/
+        retention-days: 7
