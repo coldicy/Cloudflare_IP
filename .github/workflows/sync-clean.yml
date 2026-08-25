@@ -71,9 +71,10 @@ jobs:
         
         git commit -m "chore(data): auto-sync and clean $(date '+%Y-%m-%d %H:%M')"
         
-        # 推送到当前分支
-        git push origin HEAD:$CURRENT_BRANCH
-        echo "🎉 Successfully pushed updates!"
+        # 获取当前分支名并推送
+        CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+        git push origin "${CURRENT_BRANCH}"
+        echo "🎉 Successfully pushed updates to ${CURRENT_BRANCH}!"
     
     - name: Upload artifacts (optional)
       uses: actions/upload-artifact@v4
