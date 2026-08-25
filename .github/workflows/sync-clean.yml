@@ -29,7 +29,7 @@ jobs:
     - name: Add upstream remote
       run: |
         # 替换为实际的上游仓库 URL
-        git remote add upstream https://github.com/ORIGINAL_OWNER/ORIGINAL_REPO.git || true
+        git remote add upstream https://github.com/xgonce/Cloudflare_IP.git || true
     
     - name: Fetch and merge upstream changes
       run: |
